@@ -13,9 +13,16 @@
 
 // http://localhost:8000/
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'WebsiteController@index');
+
+Route::get('/products', 'ProductsController@index');
+Route::get('/products/add', 'ProductsController@create');
+Route::get('/products/{id}', 'ProductsController@show');
+Route::post('/products', 'ProductsController@store');
+Route::get('/products/{id}/edit', 'ProductsController@edit');
+Route::patch('/products/{id}', 'ProductsController@update');
+Route::delete('/products/{id}', 'ProductsController@destroy');
+
 
 Route::get('/contact', function () {
 	return 'aca se muestra el formulario de contacto';
@@ -25,9 +32,6 @@ Route::post('/contact', function () {
 	return 'aca voy a recibir los datos del formulario para guardarlos en la db';
 });
 
-Route::get('/products', function () {
-	return view('website.products.index');
-});
 
 Route::get('/cart', function () {
 	return 'aca se muestra todo el detalle del carrito';
