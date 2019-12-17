@@ -12,7 +12,7 @@ class ProductsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $products = Product::paginate(10);
 
@@ -28,7 +28,9 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        return 'create';
+        return view('admin.products.create', [
+            'product' => new Product,
+        ]);
     }
 
     /**
@@ -39,20 +41,13 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
-        // $product = new Product;
-        // $product->title = 'sdfsdf';
-        // $product->price = 'sdfsdf';
-        // $product->stock = 'sdfsdf';
-        // $product->save();
+        $product = Product::create($request->all());
 
+        return redirect('/products/' . $product->id);
 
-        // Product::create([
-        //     'title' => 'sdfhsjdhfg', 
-        //     'price' => 0, 
-        //     'stock' => 0,
-        // ]);
+//       return redirect()->back();
 
-        return 'store';
+//        return redirect('/products');
     }
 
     /**
@@ -78,7 +73,11 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        
+        return view('admin.products.edit', [
+            'product' => $product,
+        ]);
     }
 
     /**
@@ -90,7 +89,11 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $product = Product::find($id);
+
+        $product->update($request->all());
+
+        return redirect('/products/' . $product->id);
     }
 
     /**
@@ -101,6 +104,10 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::findOrFail($id);
+
+        $product->delete();
+
+        return redirect('/products');
     }
 }
