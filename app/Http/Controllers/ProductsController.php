@@ -17,7 +17,8 @@ class ProductsController extends Controller
         $products = Product::paginate(10);
 
         return view('website.products.index', [
-            'products' => $products,
+            'title' => 'Lista de Productos',
+            'items' => $products,
         ]);
     }
 
@@ -41,13 +42,20 @@ class ProductsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'title' => 'required|max:200',
+            'stock' => 'required|min:0',
+            'price' => 'required|min:0',
+            'category_id' => 'required|exists:categories,id',
+        ]);
+
         $product = Product::create($request->all());
 
-        return redirect('/products/' . $product->id);
+        // return redirect('/products/' . $product->id);
 
-//       return redirect()->back();
-
-//        return redirect('/products');
+    //   return redirect()->back();
+    
+        return redirect('/products');
     }
 
     /**
@@ -89,6 +97,12 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->validate($request, [
+            'title' => 'required',
+            'price' => 'required',
+            'stock' => 'required',
+        ]);
+
         $product = Product::find($id);
 
         $product->update($request->all());

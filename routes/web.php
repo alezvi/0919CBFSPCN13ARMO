@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,12 +19,35 @@
 Route::get('/', 'WebsiteController@index');
 
 Route::get('/products', 'ProductsController@index');
-Route::get('/products/add', 'ProductsController@create');
 Route::get('/products/{id}', 'ProductsController@show');
-Route::post('/products', 'ProductsController@store');
-Route::get('/products/{id}/edit', 'ProductsController@edit');
-Route::patch('/products/{id}', 'ProductsController@update');
-Route::delete('/products/{id}', 'ProductsController@destroy');
+
+Route::group(['prefix' => 'admin'], function () {
+	Route::get('/products/add', 'ProductsController@create');
+	Route::post('/products', 'ProductsController@store');
+	Route::get('/products/{id}/edit', 'ProductsController@edit');
+	Route::patch('/products/{id}', 'ProductsController@update');
+	Route::delete('/products/{id}', 'ProductsController@destroy');
+});
+
+Route::group(['prefix' => 'customer'], function () {
+	// panel del cliente
+	// mis compras
+	// mis datos de facturacion
+	// mis tarjetas
+	// mis direcciones
+	// consultas
+});
+
+
+
+
+
+
+
+
+
+
+
 
 
 Route::get('/contact', function () {
@@ -50,12 +76,22 @@ Route::post('/admin/products', function () {
 });
 
 
+Route::get('/partials/products', function (Request $request) {
+	$products = \App\Product::query();
 
+	if ($request->has('title')) {
+		$products->where('title', 'like', '%' . $request->get('title') . '%');
+	}
 
+	if ($request->has('price_min')) {
+		$products->where('price', '>', $request->get('price_min'));
+	}
 
+	if ($request->has('price_max')) {
+		$products->where('price', '<', $request->get('price_max'));
+	}
 
-
-
-
-
-
+	return view('partials/_products-list', [
+		'products' => $products->orderBy('price')->paginate(5)
+	]);
+});

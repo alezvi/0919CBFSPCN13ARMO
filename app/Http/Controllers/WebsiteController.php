@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Product;
+use App\Category;
 
 class WebsiteController extends Controller
 {
@@ -13,7 +15,12 @@ class WebsiteController extends Controller
      */
     public function index()
     {
-        //
+        return view('website.home', [
+            'categories' => [],
+            'recientes' => Product::available()->take(5)->get(),
+            'ofertas' => [],
+            'destacados' => [],
+        ]);
     }
 
     /**

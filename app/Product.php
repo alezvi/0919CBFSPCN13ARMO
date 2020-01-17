@@ -8,10 +8,24 @@ class Product extends Model
 {
     protected $table = 'products';
 
-    /**
-     * No incluir: id, created_at, updated_at, deleted_at
-     */
     protected $fillable = [
-        'title', 'price', 'stock',
+        'title', 'description', 'price', 'stock',
     ];
+
+    
+
+    public function scopeAvailable($query) 
+    {
+        return $query->where('stock', '>', 0);        
+    }
+
+    public function scopeOutSell($query) 
+    {
+        return $query->where('stock', 0);        
+    }
+
+    public function scopeLatestEdited($query) 
+    {
+        return $query->orderBy('updated_at', 'desc');
+    }
 }
